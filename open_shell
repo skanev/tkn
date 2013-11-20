@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+clear
+pry -r ./code/pry_configuration.rb -r ./code/fizzbuzz
