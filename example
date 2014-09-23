@@ -1,0 +1,34 @@
+────────────────
+Език от действия
+────────────────
+
+The next three foo bar baz words are wrong
+
+An example (a very bad one) of parenthesis.
+
+nums, words = [2, 3, 5, 7, 11], [:foo, :bar]
+
+<h1>This is something</h1>
+<p>
+  The <em>quick brown</em> fox
+</p>
+
+
+
+─────────────────
+Разни дребни неща
+─────────────────
+
+- sort
+
+Zulu
+Charlie
+Alpha
+Quebec
+November
+Bravo
+
+- ruby
+
+<ul>
+</ul>

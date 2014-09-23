@@ -7,7 +7,6 @@ require 'io/console'
 require 'active_support/core_ext/string/strip'
 require 'pygments'
 
-
 #
 # --- DSL -------------------------------------------------------------
 #
@@ -16,7 +15,7 @@ def center(content)
   slide(content, :center)
 end
 
-def block(content)
+def block(content, effect = true)
   slide(content, :block)
 end
 
@@ -30,7 +29,7 @@ end
 
 def section(title)
   slide(title, :section)
-  yield
+  yield if block_given?
 end
 
 def slide(content, format, *args)
@@ -284,9 +283,12 @@ loop do
   if image?(slide)
     render(slide)
   else
+    output = render slide
+    count = output.length
+    pause = 0.3 / count
     render(slide).each_char do |c|
       print c
-      sleep 0.002 # old-school touch: running cursor
+      sleep pause # old-school touch: running cursor
     end
   end
 

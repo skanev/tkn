@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+
+for font in $(figlet -I2)/*.flf(:t:r); do
+  echo $font
+  echo "=========================================="
+  figlet -f $font $*
+  echo
+  echo
+done | less -FXRS
