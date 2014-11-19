@@ -6,6 +6,16 @@ Encoding.default_internal = "UTF-8"
 require 'io/console'
 require 'active_support/core_ext/string/strip'
 require 'pygments'
+require 'pathname'
+
+_, _, WIDTH, HEIGHT = `osascript -e 'tell application "Finder" to get bounds of window of desktop'`.split(/,\s+/).map(&:to_i)
+
+$current = 0
+def screenshot
+  file = sprintf 'captures/%03d.png', $current
+  `screencapture #{file}`
+  $current += 1
+end
 
 #
 # --- DSL -------------------------------------------------------------
@@ -30,6 +40,10 @@ end
 def section(title)
   slide(title, :section)
   yield if block_given?
+end
+
+def verbatim(content)
+  slide content, :verbatim
 end
 
 def slide(content, format, *args)
@@ -160,7 +174,10 @@ end
 
 # Renders source code.
 def render_code(code, lexer)
-  render_block(Pygments.highlight(code, formatter: 'terminal256', lexer: lexer, options: {style: 'bw'}))
+  code = "<?php #{code} ?>" if lexer == :php
+  highlighted = Pygments.highlight(code, formatter: 'terminal256', lexer: lexer, options: {style: 'bw'})
+  highlighted = highlighted[/^<\?php (.*) \?>$/m, 1] if lexer == :php
+  render_block(highlighted)
 end
 
 # Centers the whole content as a block. That is, the format within the content
@@ -182,7 +199,14 @@ end
 
 # Renders an image in the terminal by setting it as background (only works with iTerm2).
 def render_image(image_path)
-  set_background_image(File.expand_path(image_path))
+  path = Pathname(File.expand_path(image_path))
+  resized_path = path.sub_ext "-#{WIDTH}x#{HEIGHT}#{path.extname}"
+  system "convert #{path} -resize #{WIDTH}x#{HEIGHT} #{resized_path}" unless resized_path.exist?
+  set_background_image(resized_path)
+end
+
+def render_verbatim(content)
+  cursor_at 0, 0
 end
 
 
@@ -248,6 +272,7 @@ end
 # configure Terminal.app so that PageDown and PageUp get passed down the
 # script. Echoing is turned off while doing this.
 def read_command
+  screenshot
   $stdin.noecho do |noecho|
     noecho.raw do |raw|
       raw.getc.tap do |command|
@@ -286,9 +311,16 @@ loop do
     output = render slide
     count = output.length
     pause = 0.3 / count
-    render(slide).each_char do |c|
-      print c
-      sleep pause # old-school touch: running cursor
+    $stdin.noecho do |noecho|
+      render(slide).each_char do |c|
+        if c == "\a"
+          read_command
+        else
+          print c
+        end
+
+        sleep pause # old-school touch: running cursor
+      end
     end
   end
 
