@@ -1,74 +1,55 @@
 # encoding: utf-8
 
+def colorize(string)
+  string.gsub(/#(.*?)#/, "\e[\\1m").gsub(/##/, "\e[0m")
+end
+
 def annotate(string, code = '4')
   string.gsub(/@(.*?)@/, "\e[#{code}m\\1\e[0m")
 end
 
-center <<-EOS
-  \e[1mПрограмиране с нищо \e[0m
-
-
-  Стефан Кънев
-  @skanev
-
-  PlovDev 2013
+block colorize(<<-EOS)
+┌───────────────── Dimension test ─────────────────┐
+│                                                  │
+│                                                  │
+│                                                  │
+│                                                  │
+│    Color Test                                    │
+│                                                  │
+│    #90#█████ The quick brown fox jumps over the##      │
+│    #31#█████ The quick brown fox jumps over the##      │
+│    #1##31#█████ The quick brown fox jumps over the##      │
+│    #32#█████ The quick brown fox jumps over the##      │
+│    #36#█████ The quick brown fox jumps over the##      │
+│    █████ The quick brown fox jumps over the##      │
+│                                                  │
+│                                                  │
+│                                                  │
+│                                                  │
+└──────────────────────────────────────────────────┘
 EOS
 
-block <<-EOS
-  За мен:
+block colorize <<-EOS.chomp
+##
 
-    * Ходя наоколо и питам за "листчета" с код
 
-    * От време на време преподавам във ФМИ
 
-    * Играя си с много езици за програмиране
 
-    * Участвам в организацията на разни неща
 
-    * Пиша на Ruby, отвъд други неща
+    #1#П Р О Г Р А М И Р А Н Е   С   Н И Щ О##
+
+ #38;5;241#-> f { -> x { f[x[x]] }[-> x { f[x[x]] }] }##
+
+
+
+
+
+
+Стефан Кънев                   BlagoevgradConf
+#36#\@skanev                        15 ноември 2014##
 EOS
 
-section 'Поглед назад (днес)' do
-  block <<-EOS
-    За Ruby:
-
-      * Често успешни (поне щастливи) програмисти
-
-      * Не ни крадат колите
-
-      * Нещата в Java 8 ги имаме... от 1995г насам
-
-      * Имаме MRuby за embedded devices
-  EOS
-
-  block <<-EOS
-    За Ruby (2):
-
-      * Имаме Garbage Collector (за разлика от C++)
-
-      * Agile евангелисти - по нашите конференции
-
-      * Говорим на един език - Ruby
-  EOS
-
-  block <<-EOS
-    За Ruby (3):
-
-      * Прост блог с Rails - 15 минути
-
-      * Създаден за програмистско щастие
-
-      * Толкова лесно, че няма какво да си говорим
-  EOS
-
-  center <<-EOS
-    Вместо това се забавляваме
-  EOS
-
-  image 'pics/fun.jpg'
-end
-
-section 'Но за какво ще говорим?' do
+section 'За какво ще говоря?' do
   block <<-EOS
     За презентацията:
 
@@ -391,7 +372,7 @@ section 'Числа чрез ламбди' do
 
     Пет
 
-    00000101
+    0000 0101
 
     -> p { -> x { p[p[p[p[p[x]]]]] } }
   EOS
@@ -971,7 +952,7 @@ section 'Списъци и операциите им' do
   code <<-EOS
     def range(m ,n)
       if m <= n
-        range(m + 1, n).unshift(n)
+        range(m + 1, n).unshift(m)
       else
         []
       end
@@ -983,7 +964,7 @@ section 'Списъци и операциите им' do
       -> m { -> n {
         IF[IS_LESS_OR_EQUAL_TO[m][n]][
           -> x {
-            UNSHIFT[f[INCREMENT[m]][n]][m][x]
+            UNSHIFT[ f[INCREMENT[m]][n] ][ m ][ x ]
           }
         ][
           EMPTY
@@ -1023,7 +1004,7 @@ section 'Списъци и операциите им' do
           EMPTY
         ][
           UNSHIFT[
-            -> x { m[REST[l]][f][x] }
+            -> x { m[ REST[l] ][ f ][ x ] }
           ][
             f[FIRST[l]]
           ]
@@ -1042,7 +1023,7 @@ section 'Списъци и операциите им' do
           EMPTY
         ][
           UNSHIFT[
-            -> x { m[REST[l]][f][x] }
+            -> x { @m@[ REST[l] ][ f ][ x ] }
           ][
             f[FIRST[l]]
           ]
@@ -1060,7 +1041,7 @@ section 'Списъци и операциите им' do
           EMPTY
         ][
           UNSHIFT[
-            @-> x {@ m[REST[l]][f]@[x] }@
+            @-> x {@ m[ REST[l] ][ f ]@[ x ] }@
           ][
             f[FIRST[l]]
           ]
