@@ -8,18 +8,6 @@ def colorize(string)
   string.gsub(/#(.*?)#/, "\e[\\1m").gsub(/##/, "\e[0m")
 end
 
-  code <<-EOS, :php
-    $sum = 0;
-
-    for ( $i = 0; $i <= 100; $i++ ) {
-        $sum += $i;
-    }
-
-    print $sum;
-  EOS
-
-image 'pics/proglangs.jpg'
-
 block colorize(<<-EOS)
 ┌───────────────── Dimension test ─────────────────┐
 │                                                  │
@@ -88,6 +76,7 @@ block colorize <<-EOS
   \e[0m
 EOS
 
+image 'pics/proglangs.jpg'
 
 block colorize <<-EOS
   #1#\$ whoami##
@@ -660,9 +649,9 @@ section 'Sending email' do
 
 
 
-                     ルビを使って嬉しい開発者になる。
+                 ルビを使って嬉しい開発者になる。
 
-                ルビを使って嬉しいソフトウェアを作る人になる。
+            ルビを使って嬉しいソフトウェアを作る人になる。
   EOS
 
   center annotate <<-EOS, 1

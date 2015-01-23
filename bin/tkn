@@ -11,6 +11,8 @@ require 'pathname'
 _, _, WIDTH, HEIGHT = `osascript -e 'tell application "Finder" to get bounds of window of desktop'`.split(/,\s+/).map(&:to_i)
 
 $current = 0
+CAPTURING = ENV['CAPTURE']
+
 def screenshot
   file = sprintf 'captures/%03d.png', $current
   `screencapture #{file}`
@@ -201,12 +203,14 @@ end
 def render_image(image_path)
   path = Pathname(File.expand_path(image_path))
   resized_path = path.sub_ext "-#{WIDTH}x#{HEIGHT}#{path.extname}"
-  system "convert #{path} -resize #{WIDTH}x#{HEIGHT} #{resized_path}" unless resized_path.exist?
+  system "convert #{path} -resize #{WIDTH}x#{HEIGHT} -size #{WIDTH}x#{HEIGHT} xc:black +swap -gravity center -composite #{resized_path}"
   set_background_image(resized_path)
+  sleep 0.1
 end
 
 def render_verbatim(content)
   cursor_at 0, 0
+  content
 end
 
 
@@ -272,9 +276,13 @@ end
 # configure Terminal.app so that PageDown and PageUp get passed down the
 # script. Echoing is turned off while doing this.
 def read_command
-  screenshot
+  if CAPTURING
+    sleep 1
+    screenshot
+  end
   $stdin.noecho do |noecho|
     noecho.raw do |raw|
+      return 'l' if CAPTURING
       raw.getc.tap do |command|
         # Consume PageUp or PageDown if present. No other ANSI escape sequence is
         # supported so a blind 3.times getc is enough.
